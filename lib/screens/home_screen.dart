@@ -1,29 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:saathi/services/api_service.dart';
 
-void main() {
-  runApp(const MyApp());
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class _HomeScreenState extends State<HomeScreen> {
+  String userName = "Loading...";
+  String? aadharNumber;
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
-    );
+  void initState() {
+    super.initState();
+    loadAadharAndFetchUser();
   }
-}
 
-class HomeScreen extends StatelessWidget {
+  Future<void> loadAadharAndFetchUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedAadhar = prefs.getString('aadhar');
+
+    if (storedAadhar != null) {
+      setState(() {
+        aadharNumber = storedAadhar;
+      });
+      fetchUserName(storedAadhar);
+    } else {
+      setState(() {
+        userName = "Aadhaar not found";
+      });
+    }
+  }
+
+  Future<void> fetchUserName(String aadhar) async {
+    String? fetchedName = await ApiService.fetchUserName(aadhar);
+    setState(() {
+      userName = fetchedName ?? "User not found";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xF6F6D8D8),
         title: RichText(
-          text: TextSpan(
+          text: const TextSpan(
             children: [
               TextSpan(
                 text: 'Sa',
@@ -51,14 +74,13 @@ class HomeScreen extends StatelessWidget {
           Center(
             child: Column(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 40,
-                  backgroundImage: AssetImage('assets/profile.png'),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
-                  'Hi, Disha !!',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  'Hi, $userName!!',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -66,7 +88,7 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 20),
           Expanded(
             child: ListView(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               children: [
                 menuCard(Icons.app_registration, 'Registration'),
                 menuCard(Icons.location_on, 'Saathi Locator'),
@@ -89,7 +111,7 @@ class HomeScreen extends StatelessWidget {
       elevation: 4,
       color: Colors.white,
       child: ListTile(
-        contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
         leading: Icon(icon, size: 30, color: Colors.redAccent),
         title: Text(
           title,

@@ -44,11 +44,33 @@ class ApiService {
       url,
       headers: {'Content-Type': 'application/json'},
     );
-
-    if (response.statusCode == 200) {
+    print(response.body);
+    if (response.body == 'true') {
       return true; // Login successful
     } else {
       return false; // Login failed
+    }
+  }
+  static Future<String?> fetchUserName(String aadhar) async {
+    final url = Uri.parse('$_baseUrl/account/info?aadhar=$aadhar');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        
+        // Ensure the response contains the expected key
+        if (data.containsKey('name')) {
+          return data['name']; // Return the fetched username
+        } else {
+          return "Name not found";
+        }
+      } else {
+        return "Failed to fetch user info: ${response.statusCode}";
+      }
+    } catch (e) {
+      return "Error fetching user info: $e";
     }
   }
 }

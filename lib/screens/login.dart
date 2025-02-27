@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saathi/screens/account_type.dart';
 import 'package:saathi/screens/bottom_nav_bar.dart';
 import 'package:saathi/services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -17,8 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
       aadhar: aadharController.text,
       password: passwordController.text,
     );
+    print(success);
 
     if (success) {
+      // Store Aadhaar number locally
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('aadhar', aadharController.text);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => BottomNavScreen()),
