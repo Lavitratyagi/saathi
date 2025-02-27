@@ -1,25 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:saathi/screens/account_type.dart';
 import 'package:saathi/screens/bottom_nav_bar.dart';
+import 'package:saathi/services/api_service.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController aadharController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void _login() async {
+    bool success = await ApiService.login(
+      aadhar: aadharController.text,
+      password: passwordController.text,
+    );
+
+    if (success) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BottomNavScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed. Please check your credentials.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true, // Allows the app bar to be transparent
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        elevation: 0, // Removes shadow
+        elevation: 0,
         title: Row(
           children: [
-            Icon(Icons.lock_outline, color: Colors.white), // Lock Icon
+            Icon(Icons.lock_outline, color: Colors.white),
             SizedBox(width: 8),
             Text(
               "Login Account",
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -30,8 +58,7 @@ class LoginScreen extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    "assets/images/bg.png"), // Add this image in assets folder
+                image: AssetImage("assets/images/bg.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -51,10 +78,8 @@ class LoginScreen extends StatelessWidget {
                       style:
                           TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                       children: [
-                        TextSpan(
-                            text: "Sa", style: TextStyle(color: Colors.black)),
-                        TextSpan(
-                            text: "Athi", style: TextStyle(color: Colors.red)),
+                        TextSpan(text: "Sa", style: TextStyle(color: Colors.black)),
+                        TextSpan(text: "Athi", style: TextStyle(color: Colors.red)),
                       ],
                     ),
                   ),
@@ -62,6 +87,7 @@ class LoginScreen extends StatelessWidget {
 
                   // Aadhaar Number Text Field
                   TextField(
+                    controller: aadharController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: "Aadhaar Number",
@@ -76,6 +102,7 @@ class LoginScreen extends StatelessWidget {
 
                   // Password Text Field
                   TextField(
+                    controller: passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "Password",
@@ -92,15 +119,9 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BottomNavScreen()),
-                        );
-                      },
+                      onPressed: _login,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red, // Login button color
+                        backgroundColor: Colors.red,
                         padding: EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
@@ -118,8 +139,7 @@ class LoginScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const AccountType()),
+                        MaterialPageRoute(builder: (context) => const AccountType()),
                       );
                     },
                     child: Text(
@@ -130,9 +150,9 @@ class LoginScreen extends StatelessWidget {
                         fontSize: 14,
                         shadows: [
                           Shadow(
-                            color: Colors.black, // Shadow color
-                            offset: Offset(1, 1), // Shadow position
-                            blurRadius: 2, // Makes the text stand out
+                            color: Colors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 2,
                           ),
                         ],
                       ),

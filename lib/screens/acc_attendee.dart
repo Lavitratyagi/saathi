@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saathi/screens/bottom_nav_bar.dart';
+import 'package:saathi/services/api_service.dart';
 
 class CreateAccountAttendee extends StatefulWidget {
   const CreateAccountAttendee({super.key});
@@ -14,11 +15,25 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void _createAccount() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => BottomNavScreen()),
+  void _createAccount() async {
+    bool success = await ApiService.createAccount(
+      aadhar: aadharController.text,
+      name: nameController.text,
+      phoneNumber: phoneController.text,
+      password: passwordController.text,
+      emergencyContacts: [], // Add emergency contacts if needed
     );
+
+    if (success) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BottomNavScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to create account.')),
+      );
+    }
   }
 
   @override
@@ -34,7 +49,10 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
             SizedBox(width: 8),
             Text(
               "Create Account",
-              style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -62,17 +80,23 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
                   // "Create Your Account" Text
                   RichText(
                     text: TextSpan(
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       children: [
-                        TextSpan(text: "Create ", style: TextStyle(color: Colors.black)),
-                        TextSpan(text: "Account", style: TextStyle(color: Colors.red)),
+                        TextSpan(
+                            text: "Create ",
+                            style: TextStyle(color: Colors.black)),
+                        TextSpan(
+                            text: "Account",
+                            style: TextStyle(color: Colors.red)),
                       ],
                     ),
                   ),
                   SizedBox(height: 20),
 
                   // Aadhar Card Number Field
-                  _buildTextField("Aadhar Card Number", aadharController, Icons.credit_card),
+                  _buildTextField("Aadhar Card Number", aadharController,
+                      Icons.credit_card),
                   SizedBox(height: 15),
 
                   // Full Name Field
@@ -84,7 +108,8 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
                   SizedBox(height: 15),
 
                   // Password Field
-                  _buildTextField("Password", passwordController, Icons.lock, obscureText: true),
+                  _buildTextField("Password", passwordController, Icons.lock,
+                      obscureText: true),
                   SizedBox(height: 30),
 
                   // Create Account Button
@@ -93,7 +118,8 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
                       onPressed: _createAccount,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
-                        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -114,13 +140,16 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
   }
 
   // Custom TextField Widget
-  Widget _buildTextField(String hintText, TextEditingController controller, IconData icon, {bool obscureText = false}) {
+  Widget _buildTextField(
+      String hintText, TextEditingController controller, IconData icon,
+      {bool obscureText = false}) {
     return TextField(
       controller: controller,
       obscureText: obscureText,
-      keyboardType: hintText == "Phone Number" || hintText == "Aadhar Card Number"
-          ? TextInputType.number
-          : TextInputType.text,
+      keyboardType:
+          hintText == "Phone Number" || hintText == "Aadhar Card Number"
+              ? TextInputType.number
+              : TextInputType.text,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(color: Colors.black),
@@ -137,11 +166,11 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.red, width: 2), // Red Border on Focus
+          borderSide:
+              BorderSide(color: Colors.red, width: 2), // Red Border on Focus
         ),
       ),
       style: TextStyle(color: Colors.black), // Text Color
     );
   }
 }
-
