@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saathi/services/api_service.dart';
 
 class SosScreen extends StatefulWidget {
   @override
@@ -66,7 +67,8 @@ class _SosScreenState extends State<SosScreen>
             backgroundColor: Color(0xFFEE6262),
             child: Text(
               chats[index]['name']![0],
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           title: Text(
@@ -76,7 +78,8 @@ class _SosScreenState extends State<SosScreen>
           subtitle: Text(chats[index]['message']!),
           onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Opening chat with ${chats[index]['name']}')),
+              SnackBar(
+                  content: Text('Opening chat with ${chats[index]['name']}')),
             );
           },
         );
@@ -103,8 +106,11 @@ class _SosScreenState extends State<SosScreen>
           ),
           SizedBox(height: 32),
           GestureDetector(
-            onLongPress: () {
-              setState(() => _sosActivated = true);
+            onLongPress: () async {
+              bool success = await ApiService.sendSOS();
+              if (success) {
+                setState(() => _sosActivated = true);
+              }
             },
             child: Center(
               child: Container(

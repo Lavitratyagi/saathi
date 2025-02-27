@@ -73,4 +73,21 @@ class ApiService {
       return "Error fetching user info: $e";
     }
   }
+
+  static Future<bool> sendSOS() async {
+    try {
+      final response = await http.get(
+        Uri.parse("http://192.168.207.18/buzzer"),
+      );
+
+      if (response.statusCode == 200) {
+        return true; // SOS request sent successfully
+      } else {
+        return false; // API returned an error
+      }
+    } catch (e) {
+      print("Error sending SOS: $e");
+      return false; // Network error
+    }
+  }
 }
