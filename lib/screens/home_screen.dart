@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:saathi/screens/contacts.dart';
+import 'package:saathi/screens/event_list.dart';
+import 'package:saathi/screens/map_screen.dart';
+import 'package:saathi/screens/saathi_finder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:saathi/services/api_service.dart';
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -90,11 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                menuCard(Icons.app_registration, 'Registration'),
-                menuCard(Icons.location_on, 'Saathi Locator'),
-                menuCard(Icons.map, 'Path Finder'),
-                menuCard(Icons.warning, 'HotSpots'),
-                menuCard(Icons.contact_phone, 'Emergency Contacts'),
+                menuCard(Icons.app_registration, 'Registration', RegistrationScreen()),
+                menuCard(Icons.location_on, 'Saathi Locator', LiveMapScreen()),
+                menuCard(Icons.warning, 'HotSpots', MapsScreen()),
+                menuCard(Icons.contact_phone, 'Emergency Contacts', ContactsScreen()),
               ],
             ),
           ),
@@ -103,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget menuCard(IconData icon, String title) {
+  Widget menuCard(IconData icon, String title, Widget screen) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -121,7 +123,12 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.black,
           ),
         ),
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => screen),
+          );
+        },
       ),
     );
   }

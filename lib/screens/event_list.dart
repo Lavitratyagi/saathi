@@ -1,28 +1,12 @@
 
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: RegistrationScreen(),
-    );
-  }
-}
-
 class RegistrationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xF6D8D880),
+        backgroundColor: const Color(0xF6F6D8D8),
         title: RichText(
           text: TextSpan(
             children: [
@@ -31,7 +15,7 @@ class RegistrationScreen extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 30,
                 ),
               ),
               TextSpan(
@@ -39,7 +23,7 @@ class RegistrationScreen extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.red,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 30,
                 ),
               ),
             ],

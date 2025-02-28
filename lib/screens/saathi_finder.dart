@@ -38,6 +38,8 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
     setState(() {
       username = prefs.getString('user_name') ?? "User${Random().nextInt(1000)}";
     });
+    username = prefs.getString('user_name')!;
+    print(username);
     _connectToWebSocket();
     _getUserLocation();
   }

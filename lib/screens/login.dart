@@ -22,10 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (success) {
       // Store Aadhaar number locally
-      String name = fetchUserName(aadharController.text) as String;
+      Future<String?> name = fetchUserName(aadharController.text);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('aadhar', aadharController.text);
-      await prefs.setString('user_name', name);
+      await prefs.setString('user_name', name.toString());
 
       Navigator.pushReplacement(
         context,
