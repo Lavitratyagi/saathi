@@ -16,13 +16,14 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // Function to store Aadhar number in SharedPreferences
-  Future<void> _storeAadharNumber(String aadhar) async {
+  // Function to store Aadhar number and Name in SharedPreferences
+  Future<void> _storeUserData(String aadhar, String name) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('aadhar_number', aadhar);
+    await prefs.setString('aadhar', aadhar);
+    await prefs.setString('user_name', name);
   }
 
-  // Function to create account and store Aadhar number
+  // Function to create an account and store Aadhar number & Name
   void _createAccount() async {
     bool success = await ApiService.createAccount(
       aadhar: aadharController.text,
@@ -34,8 +35,8 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
     print(success);
 
     if (success) {
-      print("Sucess");
-      await _storeAadharNumber(aadharController.text); // Store Aadhar number
+      print("Success");
+      await _storeUserData(aadharController.text, nameController.text); // Store data
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => BottomNavScreen()),
@@ -51,13 +52,13 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true, // Transparent AppBar
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        elevation: 0, // No shadow
+        elevation: 0,
         title: Row(
           children: const [
-            Icon(Icons.person, color: Colors.white), // User Icon
+            Icon(Icons.person, color: Colors.white),
             SizedBox(width: 8),
             Text(
               "Create Account",
@@ -75,7 +76,7 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/bg.png"), // Background Image
+                image: AssetImage("assets/images/bg.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -89,49 +90,35 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // "Create Your Account" Text
                   RichText(
                     text: const TextSpan(
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       children: [
-                        TextSpan(
-                            text: "Create ",
-                            style: TextStyle(color: Colors.black)),
-                        TextSpan(
-                            text: "Account",
-                            style: TextStyle(color: Colors.red)),
+                        TextSpan(text: "Create ", style: TextStyle(color: Colors.black)),
+                        TextSpan(text: "Account", style: TextStyle(color: Colors.red)),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
 
-                  // Aadhar Card Number Field
-                  _buildTextField("Aadhar Card Number", aadharController,
-                      Icons.credit_card),
+                  _buildTextField("Aadhar Card Number", aadharController, Icons.credit_card),
                   const SizedBox(height: 15),
 
-                  // Full Name Field
                   _buildTextField("Full Name", nameController, Icons.person),
                   const SizedBox(height: 15),
 
-                  // Phone Number Field
                   _buildTextField("Phone Number", phoneController, Icons.phone),
                   const SizedBox(height: 15),
 
-                  // Password Field
-                  _buildTextField("Password", passwordController, Icons.lock,
-                      obscureText: true),
+                  _buildTextField("Password", passwordController, Icons.lock, obscureText: true),
                   const SizedBox(height: 30),
 
-                  // Create Account Button
                   Center(
                     child: ElevatedButton(
                       onPressed: _createAccount,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 50, vertical: 15),
+                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -167,11 +154,10 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
         hintStyle: const TextStyle(color: Colors.black),
         prefixIcon: Icon(icon, color: Colors.black),
         filled: true,
-        fillColor: Colors.transparent, // Transparent Background
+        fillColor: Colors.transparent,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide:
-              const BorderSide(color: Colors.black, width: 2), // Black Border
+          borderSide: const BorderSide(color: Colors.black, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -179,11 +165,10 @@ class _CreateAccountAttendeeState extends State<CreateAccountAttendee> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide:
-              const BorderSide(color: Colors.red, width: 2), // Red Border on Focus
+          borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
       ),
-      style: const TextStyle(color: Colors.black), // Text Color
+      style: const TextStyle(color: Colors.black),
     );
   }
 }

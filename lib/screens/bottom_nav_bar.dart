@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saathi/screens/contacts.dart';
 import 'package:saathi/screens/home_screen.dart';
 import 'package:saathi/screens/map_screen.dart';
+import 'package:saathi/screens/saathi_finder.dart';
 import 'package:saathi/screens/sos.dart';
 
 class BottomNavScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     MapsScreen(),
     SosScreen(),
     ContactsScreen(),
-    Center(child: Text('Friends Screen')),
+    LiveMapScreen(),
   ];
 
   @override

@@ -22,8 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (success) {
       // Store Aadhaar number locally
+      String name = fetchUserName(aadharController.text) as String;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('aadhar', aadharController.text);
+      await prefs.setString('user_name', name);
 
       Navigator.pushReplacement(
         context,
@@ -34,6 +36,13 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text('Login failed. Please check your credentials.')),
       );
     }
+  }
+
+
+  Future<String?> fetchUserName(String aadhar) async {
+    String? fetchedName = await ApiService.fetchUserName(aadhar);
+    
+    return fetchedName;
   }
 
   @override
