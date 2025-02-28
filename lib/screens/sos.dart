@@ -29,7 +29,7 @@ class _SosScreenState extends State<SosScreen>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFEE3030),
-        title: Text("Women Safety App"),
+        title: Text("SaAthi"),
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.white,

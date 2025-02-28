@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/io.dart';
 
 class ApiService {
   static const String _baseUrl = 'http://192.168.207.212:8000';
@@ -51,6 +53,7 @@ class ApiService {
       return false; // Login failed
     }
   }
+
   static Future<String?> fetchUserName(String aadhar) async {
     final url = Uri.parse('$_baseUrl/account/info?aadhar=$aadhar');
 
@@ -59,7 +62,7 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        
+
         // Ensure the response contains the expected key
         if (data.containsKey('name')) {
           return data['name']; // Return the fetched username
@@ -74,20 +77,55 @@ class ApiService {
     }
   }
 
+  static final String buzzerUrl = "http://192.168.207.18/buzzer";
+  static final String imageUrl = "http://192.168.207.18/capture";
+  static final String websocketUrl =
+      "ws://192.168.207.212:8000/broadcast/image";
+
   static Future<bool> sendSOS() async {
     try {
       final response = await http.get(
         Uri.parse("http://192.168.207.18/buzzer"),
       );
 
-      if (response.statusCode == 200) {
-        return true; // SOS request sent successfully
-      } else {
-        return false; // API returned an error
+      // Connect to WebSocket
+      final channel = IOWebSocketChannel.connect(websocketUrl);
+      print("WebSocket connected...");
+
+      for (int i = 0; i < 10; i++) {
+        try {
+          print("Fetching image $i...");
+
+          final imageResponse = await http.get(Uri.parse(imageUrl));
+
+          if (imageResponse.statusCode == 200) {
+            try {
+              Uint8List imageBytes = imageResponse.bodyBytes;
+              print("Image decoded successfully!");
+
+              // Send image via WebSocket
+              channel.sink.add(imageBytes);
+              print("Image $i sent via WebSocket.");
+            } catch (decodeError) {
+              print("Base64 Decoding Error: $decodeError");
+            }
+          } else {
+            print(
+                "Image request failed with status: ${imageResponse.statusCode}");
+          }
+        } catch (httpError) {
+          print("Error fetching image: $httpError");
+        }
+
+        await Future.delayed(Duration(seconds: 5));
       }
+
+      channel.sink.close();
+      print("WebSocket closed.");
+      return true;
     } catch (e) {
-      print("Error sending SOS: $e");
-      return false; // Network error
+      print("Error in SOS process: $e");
+      return false;
     }
   }
 }
