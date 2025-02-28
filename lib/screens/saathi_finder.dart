@@ -19,7 +19,7 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
   late IOWebSocketChannel channel;
   StreamSubscription<LocationData>? _locationSubscription;
 
-  LatLng _currentPosition = LatLng(20.5937, 78.9629); // Default (India)
+  LatLng _currentPosition = LatLng(0,0); // Default (India)
   double _currentZoom = 15.0;
   String username = "Unknown";
   bool _shouldFollowUser = true; // Track if map should auto-follow user
